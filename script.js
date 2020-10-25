@@ -12,11 +12,21 @@ const addBombs = () => {
       bombCell = document.querySelector(`.cell[data-row-col="${row}-${col}"]`)
     
     bombCell.classList.toggle('bomb')
-    bombCell.addEventListener('click', () => {
-      bombCell.style.backgroundColor = 'red'
+    bombCell.style.backgroundColor = 'red'
+    bombCell.addEventListener('click', () => {      
       alert('You clicked on a bomb. Game over!')
       clearGrid()
     })
+  }
+}
+
+const checkNeighbors = (callback) => {
+  for (let i = row - 1, x = i + 3; i < x; i++) {
+    for (let j = col - 1, y = j + 3; j < y; j++) {
+      if ((i >= 0 && i < gridSize) && (j >= 0 && j < gridSize)) {
+        callback()
+      }
+    }
   }
 }
 
@@ -24,23 +34,34 @@ const checkSurroundings = (e) => {
   let [row, col] = e.target.getAttribute('data-row-col').split('-'),
     noOfBombs = 0
 
+  row = parseInt(row)
+  col = parseInt(col)
   e.target.style.backgroundColor = 'royalblue'
-
+  
   for (let i = row - 1, x = i + 3; i < x; i++) {
     for (let j = col - 1, y = j + 3; j < y; j++) {
-      if ((i >= 0 && i < gridSize) && (j >= 0 && j < gridSize)) {
+      if ((i > 0 && i < gridSize) && (j > 0 && j < gridSize)) {
         let nearbyCell = document.querySelector(`.cell[data-row-col="${i}-${j}"]`)
         
         if (hasClass(nearbyCell, 'bomb')) {
           noOfBombs++
         } else {
-          //nearbyCell.style.backgroundColor = 'royalblue'
+          nearbyCell.style.backgroundColor = 'royalblue'
         }
       }
     }
   }
   
   return noOfBombs
+}
+
+const checkForBombs = (e) => {
+  let bombsNearby = checkSurroundings(e)
+  let text = document.createElement('p')
+  text.textContent = `${bombsNearby}`
+  console.log(e.target)
+  e.target.appendChild(text);
+  e.target.removeEventListener('click', checkForBombs)
 }
 
 const drawGrid = (size) => {
@@ -52,15 +73,7 @@ const drawGrid = (size) => {
       let cell = document.createElement('div')
       cell.classList.add('cell')
       cell.setAttribute('data-row-col', `${i}-${j}`)
-
-      cell.addEventListener('click', (e) => {
-        let bombsNearby = checkSurroundings(e)
-        let text = document.createElement('p')
-        text.textContent = `${bombsNearby}`
-        cell.appendChild(text);
-      })
-
-      
+      cell.addEventListener('click', checkForBombs)      
       grid.appendChild(cell);
     }
     /* For etch-a-sketch
