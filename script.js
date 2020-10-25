@@ -34,7 +34,7 @@ const checkSurroundings = (e) => {
         if (hasClass(nearbyCell, 'bomb')) {
           noOfBombs++
         } else {
-          nearbyCell.style.backgroundColor = 'royalblue'
+          //nearbyCell.style.backgroundColor = 'royalblue'
         }
       }
     }
@@ -55,9 +55,9 @@ const drawGrid = (size) => {
 
       cell.addEventListener('click', (e) => {
         let bombsNearby = checkSurroundings(e)
-        //let text = document.createElement('p')
-        //text.textContent = `${bombsNearby}`
-        //cell.appendChild(text);
+        let text = document.createElement('p')
+        text.textContent = `${bombsNearby}`
+        cell.appendChild(text);
       })
 
       
