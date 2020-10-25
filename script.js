@@ -1,4 +1,4 @@
-let gridSize = 16;
+let gridSize = 10;
 
 const hasClass = (element, cls) => {
   return element.className.includes(cls);
