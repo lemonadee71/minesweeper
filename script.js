@@ -63,13 +63,13 @@ const checkForBombs = (cell) => {
     [bombsNearby, neighbors] = checkNeighbors(...pos)
 
   cell.classList.add('visited')
+  cell.style.backgroundColor = 'white'  
 
   if (bombsNearby) {
     let text = document.createElement('p')
     text.textContent = `${bombsNearby}`
     
-    cell.appendChild(text);
-    cell.style.backgroundColor = 'white'  
+    cell.appendChild(text);    
     cell.style.color = `rgb(${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)})`
     cell.removeEventListener('click', cellSelected)
   } else {
