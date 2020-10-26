@@ -15,7 +15,7 @@ const addBombs = () => {
     bombCell.addEventListener('click', () => {      
       revealBombs()
       alert('You clicked on a bomb. Game over!')    
-      setTimeout(clearGrid, 1000) 
+      setTimeout(clearGrid, 1500) 
     })
   }
 }
@@ -23,6 +23,7 @@ const addBombs = () => {
 const revealBombs = () => {
   let bombs = Array.from(document.querySelectorAll('.bomb'))
   bombs.forEach(bomb => {
+    bomb.classList.remove('flag')
     setTimeout(() => {
       bomb.style.backgroundColor = 'red'
     }, 500)    
@@ -64,6 +65,7 @@ const checkForBombs = (cell) => {
 
   cell.classList.add('visited')
   cell.style.backgroundColor = 'white'  
+  cell.classList.remove('flag')
 
   if (bombsNearby) {
     let text = document.createElement('p')
@@ -88,6 +90,12 @@ const cellSelected = (e) => {
   let cell = e.target
   checkForBombs(cell)
   cell.removeEventListener('click', cellSelected)
+  cell.removeEventListener('contextmenu', addFlag)
+}
+
+const addFlag = (e) => {
+  e.preventDefault()
+  e.target.classList.toggle('flag')
 }
 
 const drawGrid = (size) => {
@@ -99,7 +107,8 @@ const drawGrid = (size) => {
       let cell = document.createElement('div')
       cell.classList.add('cell')
       cell.setAttribute('data-pos', `${i}-${j}`)
-      cell.addEventListener('click', cellSelected)   
+      cell.addEventListener('click', cellSelected)
+      cell.addEventListener('contextmenu', addFlag)   
       grid.appendChild(cell);     
     } 
   }
