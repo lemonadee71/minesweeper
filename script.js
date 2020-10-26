@@ -1,11 +1,12 @@
-let gridSize = 16;
+let gridSize = 12,
+  bombPercentage = 0.2;
 
 const hasClass = (element, cls) => {
   return element.className.includes(cls);
 }
 
 const addBombs = () => {
-  let noOfBombs = Math.floor(gridSize**2 * 0.2)
+  let noOfBombs = Math.floor(gridSize**2 * bombPercentage)
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
       col = Math.floor(Math.random() * gridSize) + 1,
@@ -40,7 +41,6 @@ const checkNeighbors = (row, col) => {
       if ((i > 0 && i <= gridSize) && (j > 0  && j <= gridSize)) {
         let nearbyCell = document.querySelector(`.cell[data-pos="${i}-${j}"]`)
         neighbors.push(nearbyCell)        
-        console.log(nearbyCell, i, j)
         if (hasClass(nearbyCell, 'bomb')) {
           noOfBombs++
         }
@@ -124,20 +124,45 @@ const clearGrid = () => {
   drawGrid(gridSize);
 }
 
-let button = document.getElementById('submit')
-button.addEventListener('click', () => {
+/* Settings element event listeners */
+
+let button1 = document.getElementById('x')
+button1.addEventListener('click', () => {
   let value = document.getElementById('grid-size').value
 
   if (value > 50) {
     alert('Max grid size is 25')
     return;
-  } else if (value < 10) {
-    alert('Minimum grid size is 10')
+  } else if (value < 8) {
+    alert('Minimum grid size is 8')
     return;
   }
 
   gridSize = parseInt(value);
   clearGrid();
+})
+
+let button2 = document.getElementById('y')
+button2.addEventListener('click', () => {
+  let value = parseFloat(document.getElementById('bomb-no').value)
+
+  if (value < 0.1) {
+    alert('Minimum number of bombs is 10% of grid area')
+    return;
+  } else if (value > 0.6) {
+    alert('Maximum number of bombs is 60% of grid area')
+    return;
+  }
+
+  alert(`Number of bombs is changed to ${value*100}% of grid area`)
+  bombPercentage = value;
+  clearGrid();
+})
+
+let dropdown = document.getElementById('difficulty')
+dropdown.addEventListener('change', (e) => {
+  [gridSize, bombPercentage] = e.target.value.split('-').map(x => parseFloat(x))
+  clearGrid()
 })
 
 document.addEventListener('onload', drawGrid(gridSize))

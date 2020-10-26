@@ -1,0 +1,54 @@
+h1, p {
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  padding: 0;
+}
+input, button, select {
+  padding: 3px;
+  margin: 3px;
+}
+input {
+  width: 270px;
+}
+div#grid {
+  height: 600px;
+  width: 600px;
+  margin: auto;
+  border: 3px solid #000;
+  display: grid;
+  background-color: #000;
+  grid-gap: 1px 1px;
+}
+.cell {
+  background-color: wheat;
+  box-sizing: border-box;
+  min-height: 1.5vw;
+}
+.container {
+  margin: 10px auto;
+  width: 80%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 0 30px;
+}
+.settings {
+  background-color: aliceblue;
+  margin: 10px auto;
+  text-align: center;
+}
+.options {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.options > div:nth-child(odd) {
+  margin: 10px;
+}
+.bomb {
+  /*background-color: red;*/
+  font-size: min(1vw, 12px);
+}
+.flag {
+  border-radius: 50%;
+  background-color: yellow;
+}      

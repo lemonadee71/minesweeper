@@ -4,56 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper</title>
-    <style>
-      p {
-        margin: 0;
-        padding: 0;
-      }
-      input {
-        padding: 3px;
-      }
-      button {
-        padding: 3px;
-      }
-      div#grid {
-        height: 600px;
-        width: 600px;
-        margin: auto;
-        border: 5px solid #000;
-        display: grid;
-        background-color: #000;
-        grid-gap: 1px 1px;
-      }
-      .cell {
-        background-color: wheat;
-        box-sizing: border-box;
-        min-height: 1.5vw;
-      }
-      .container {
-        margin: 10px auto;
-        width: 70%;
-      }
-      .settings {
-        margin: auto;
-        text-align: center;
-      }
-      .bomb {
-        /*background-color: red;*/
-        font-size: min(1vw, 12px);
-      }
-      .flag {
-        border-radius: 50%;
-        background-color: yellow;
-      }      
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div id="grid"></div>
     <div class="container">
+      <div id="grid"></div>
       <div class="settings">
-        <input id="grid-size" type="number" max="25" placeholder="Enter grid size (max 25)">
-        <button id="submit">Submit</button>
-      </div>      
+        <div class="text">
+          <h1>Minesweeper</h1>
+          <p>Implementation by Shin Andrei Riego</p>
+        </div>        
+        <div class="options">
+          <!-- Grid options -->
+          <div class="size">
+            <input id="grid-size" type="number" max="25" placeholder="Enter grid size (min 8, max 25)">
+            <button id="x">Submit</button>
+          </div> 
+          <div class="no-of-bombs">
+            <input id="bomb-no" type="number" max="0.8" step="0.1" placeholder="Enter number of bombs (max 0.7 or 70%)">
+            <button id="y">Submit</button>
+          </div> 
+          <p>Or</p>         
+          <!-- Difficulty -->
+          <div class="diff">
+            <label for="difficulty">Choose difficulty:</label>
+            <select name="difficulty" id="difficulty">
+              <option value="8-0.15">Easy</option>
+              <option value="12-0.21" selected="selected">Intermediate</option>
+              <option value="16-0.28">Hard</option>
+              <option value="24-0.4">Hell</option>
+            </select>
+          </div>          
+        </div>        
+      </div>        
     </div>    
     <script src="script.js"></script>
   </body>
