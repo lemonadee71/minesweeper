@@ -9,9 +9,10 @@ const addBombs = () => {
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
       col = Math.floor(Math.random() * gridSize) + 1,
-      bombCell = document.querySelector(`.cell[data-row-col="${row}-${col}"]`)
+      bombCell = document.querySelector(`.cell[data-pos="${row}-${col}"]`)
     
-    bombCell.classList.toggle('bomb')
+    //bombCell.setAttribute('data-bomb', 'true')
+    bombCell.classList.add('bomb')
     bombCell.style.backgroundColor = 'red'
     bombCell.addEventListener('click', () => {      
       alert('You clicked on a bomb. Game over!')
@@ -20,29 +21,16 @@ const addBombs = () => {
   }
 }
 
-const checkNeighbors = (callback) => {
-  for (let i = row - 1, x = i + 3; i < x; i++) {
-    for (let j = col - 1, y = j + 3; j < y; j++) {
-      if ((i >= 0 && i < gridSize) && (j >= 0 && j < gridSize)) {
-        callback()
-      }
-    }
-  }
-}
-
-const checkSurroundings = (e) => {
-  let [row, col] = e.target.getAttribute('data-row-col').split('-'),
-    noOfBombs = 0
-
-  row = parseInt(row)
-  col = parseInt(col)
-  e.target.style.backgroundColor = 'royalblue'
+const checkSurroundings = (row, col) => {
+  let noOfBombs = 0
   
   for (let i = row - 1, x = i + 3; i < x; i++) {
     for (let j = col - 1, y = j + 3; j < y; j++) {
-      if ((i > 0 && i < gridSize) && (j > 0 && j < gridSize)) {
-        let nearbyCell = document.querySelector(`.cell[data-row-col="${i}-${j}"]`)
-        
+      if ((i > 0 && i <= gridSize) && (j > 0  && j <= gridSize)) {
+        let nearbyCell = document.querySelector(`.cell[data-pos="${i}-${j}"]`)
+        //console.log('data-bomb' in nearbyCell.attributes)
+        if (!nearbyCell) break;
+
         if (hasClass(nearbyCell, 'bomb')) {
           noOfBombs++
         } else {
@@ -52,16 +40,23 @@ const checkSurroundings = (e) => {
     }
   }
   
-  return noOfBombs
+  return noOfBombs;
 }
 
-const checkForBombs = (e) => {
-  let bombsNearby = checkSurroundings(e)
-  let text = document.createElement('p')
+const checkForBombs = (cell) => {
+  let pos = cell.getAttribute('data-pos').split('-').map(x => parseInt(x)),
+    bombsNearby = checkSurroundings(...pos),
+    text = document.createElement('p')
+
   text.textContent = `${bombsNearby}`
-  console.log(e.target)
-  e.target.appendChild(text);
-  e.target.removeEventListener('click', checkForBombs)
+  cell.appendChild(text);
+  cell.style.backgroundColor = 'royalblue'
+}
+
+const cellSelected = (e) => {
+  let cell = e.target
+  checkForBombs(cell)
+  cell.removeEventListener('click', checkForBombs)
 }
 
 const drawGrid = (size) => {
@@ -72,15 +67,10 @@ const drawGrid = (size) => {
     for (let j = 1; j <= size; j++) {
       let cell = document.createElement('div')
       cell.classList.add('cell')
-      cell.setAttribute('data-row-col', `${i}-${j}`)
-      cell.addEventListener('click', checkForBombs)      
-      grid.appendChild(cell);
-    }
-    /* For etch-a-sketch
-    cell.addEventListener('mouseover', () => {
-      cell.style.backgroundColor = `rgb(${Math.floor(Math.random()*256)}, ${Math.floor(Math.random()*256)}, ${Math.floor(Math.random()*256)})`
-    })
-    */    
+      cell.setAttribute('data-pos', `${i}-${j}`)
+      cell.addEventListener('click', cellSelected)   
+      grid.appendChild(cell);     
+    } 
   }
 
   addBombs()
