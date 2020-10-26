@@ -1,16 +1,24 @@
 let gridSize = 12,
-  bombPercentage = 0.2;
+  bombPercentage = 0.2,
+  noOfBombs = Math.floor(gridSize**2 * bombPercentage),
+  noOfCells = gridSize**2 - noOfBombs,
+  duplicates = 0;
 
 const hasClass = (element, cls) => {
   return element.className.includes(cls);
 }
 
 const addBombs = () => {
-  let noOfBombs = Math.floor(gridSize**2 * bombPercentage)
+  let positionArray = []
+
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
-      col = Math.floor(Math.random() * gridSize) + 1,
-      bombCell = document.querySelector(`.cell[data-pos="${row}-${col}"]`)
+      col = Math.floor(Math.random() * gridSize) + 1
+
+    if (positionArray.includes(`${row}${col}`)) duplicates++
+    positionArray.push(`${row}${col}`)
+
+    let bombCell = document.querySelector(`.cell[data-pos="${row}-${col}"]`)
     
     bombCell.classList.add('bomb')  
     bombCell.addEventListener('click', () => {      
@@ -19,6 +27,9 @@ const addBombs = () => {
       setTimeout(clearGrid, 1500) 
     })
   }
+
+  noOfCells += duplicates
+  console.log(noOfBombs, noOfCells, duplicates)
 }
 
 const revealBombs = () => {
@@ -32,7 +43,7 @@ const revealBombs = () => {
 }
 
 const checkNeighbors = (row, col) => {
-  let noOfBombs = 0,
+  let nearbyBombs = 0,
     neighbors = []
   
   for (let i = row - 1, x = i + 3; i < x; i++) {
@@ -42,13 +53,13 @@ const checkNeighbors = (row, col) => {
         let nearbyCell = document.querySelector(`.cell[data-pos="${i}-${j}"]`)
         neighbors.push(nearbyCell)        
         if (hasClass(nearbyCell, 'bomb')) {
-          noOfBombs++
+          nearbyBombs++
         }
       }
     }
   }
 
-  return [noOfBombs, neighbors];
+  return [nearbyBombs, neighbors];
 }
 
 const revealNeighbors = (neighbors) => {
@@ -65,7 +76,8 @@ const checkForBombs = (cell) => {
 
   cell.classList.add('visited')
   cell.classList.remove('flag')
-  cell.style.backgroundColor = 'white'   
+  cell.style.backgroundColor = 'white'
+  noOfCells-- 
 
   if (bombsNearby) {
     let text = document.createElement('p')
@@ -82,7 +94,12 @@ const checkForBombs = (cell) => {
       }
     })    
   }
-  
+
+  if (noOfCells === 0) {
+    alert('Congratulations! You won.')
+    clearGrid()
+    return;
+  }  
 }
 
 const cellSelected = (e) => {
@@ -123,6 +140,8 @@ const clearGrid = () => {
   }
   drawGrid(gridSize);
 }
+
+
 
 /* Settings element event listeners */
 
