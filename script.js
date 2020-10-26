@@ -80,11 +80,12 @@ const checkForBombs = (cell) => {
   noOfCells-- 
 
   if (bombsNearby) {
-    let text = document.createElement('p')
-    text.textContent = `${bombsNearby}`
-    
-    cell.appendChild(text);    
-    cell.style.color = `rgb(${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)})`
+    if (!hasClass(cell, 'bomb')) {
+      let text = document.createElement('p')
+      text.textContent = `${bombsNearby}`
+      cell.appendChild(text);    
+      cell.style.color = `rgb(${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)})`
+    }    
     cell.removeEventListener('click', cellSelected)
   } else {
     revealNeighbors(neighbors)

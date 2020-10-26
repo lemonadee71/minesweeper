@@ -45,7 +45,7 @@ div#grid {
   margin: 10px;
 }
 .bomb {
-  background-color: red;
+  /*background-color: red;*/
   font-size: min(1vw, 12px);
 }
 .flag {
