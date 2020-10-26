@@ -5,58 +5,87 @@ const hasClass = (element, cls) => {
 }
 
 const addBombs = () => {
-  let noOfBombs = Math.floor(gridSize**2 * 0.3)
+  let noOfBombs = Math.floor(gridSize**2 * 0.2)
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
       col = Math.floor(Math.random() * gridSize) + 1,
       bombCell = document.querySelector(`.cell[data-pos="${row}-${col}"]`)
     
-    //bombCell.setAttribute('data-bomb', 'true')
     bombCell.classList.add('bomb')
-    bombCell.style.backgroundColor = 'red'
-    bombCell.addEventListener('click', () => {      
-      alert('You clicked on a bomb. Game over!')
-      clearGrid()
+    bombCell.addEventListener('click', async () => {      
+      await revealBombs()
+      alert('You clicked on a bomb. Game over!')    
+      setTimeout(clearGrid, 1000) 
     })
   }
 }
 
-const checkSurroundings = (row, col) => {
-  let noOfBombs = 0
+const revealBombs = () => {
+  let bombs = Array.from(document.querySelectorAll('.bomb'))
+  bombs.forEach(bomb => {
+    setTimeout(() => {
+      bomb.style.backgroundColor = 'red'
+    }, 500)    
+  })
+}
+
+const checkNeighbors = (row, col) => {
+  let noOfBombs = 0,
+    neighbors = []
   
   for (let i = row - 1, x = i + 3; i < x; i++) {
     for (let j = col - 1, y = j + 3; j < y; j++) {
       if ((i > 0 && i <= gridSize) && (j > 0  && j <= gridSize)) {
         let nearbyCell = document.querySelector(`.cell[data-pos="${i}-${j}"]`)
-        //console.log('data-bomb' in nearbyCell.attributes)
-        if (!nearbyCell) break;
+        neighbors.push(nearbyCell)        
 
         if (hasClass(nearbyCell, 'bomb')) {
           noOfBombs++
-        } else {
-          nearbyCell.style.backgroundColor = 'royalblue'
         }
       }
     }
   }
-  
-  return noOfBombs;
+  console.log(neighbors.length)
+  return [noOfBombs, neighbors];
+}
+
+const revealNeighbors = (neighbors) => {
+  neighbors.forEach(cell => {
+    if (!hasClass(cell, 'visited'))
+      cell.style.backgroundColor = 'white'
+  })
 }
 
 const checkForBombs = (cell) => {
   let pos = cell.getAttribute('data-pos').split('-').map(x => parseInt(x)),
-    bombsNearby = checkSurroundings(...pos),
-    text = document.createElement('p')
+    [bombsNearby, neighbors] = checkNeighbors(...pos)
 
-  text.textContent = `${bombsNearby}`
-  cell.appendChild(text);
-  cell.style.backgroundColor = 'royalblue'
+  if (bombsNearby > 0) {
+    let text = document.createElement('p')
+    text.textContent = `${bombsNearby}`
+    
+    cell.appendChild(text);
+    cell.classList.add('visited')
+    cell.style.backgroundColor = 'white'
+    cell.style.color = `rgb(${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)})`
+    cell.removeEventListener('click', cellSelected)
+  } else {
+    revealNeighbors(neighbors)
+    /*
+    neighbors.forEach(cell => {
+      if (!hasClass(cell, 'visited')) {
+        checkForBombs(cell)
+      }
+    })
+    */
+  }
+  
 }
 
 const cellSelected = (e) => {
   let cell = e.target
   checkForBombs(cell)
-  cell.removeEventListener('click', checkForBombs)
+  cell.removeEventListener('click', cellSelected)
 }
 
 const drawGrid = (size) => {
