@@ -1,4 +1,4 @@
-let gridSize = 10;
+let gridSize = 16;
 
 const hasClass = (element, cls) => {
   return element.className.includes(cls);
@@ -56,6 +56,7 @@ const revealNeighbors = (neighbors) => {
   neighbors.forEach(cell => {
     if (!hasClass(cell, 'visited'))
       cell.style.backgroundColor = 'white'
+      cell.removeEventListener('contextmenu', addFlag)
   })
 }
 
@@ -76,7 +77,6 @@ const checkForBombs = (cell) => {
     cell.removeEventListener('click', cellSelected)
   } else {
     revealNeighbors(neighbors)
-    
     neighbors.forEach(cell => {
       if (!hasClass(cell, 'visited')) {
         checkForBombs(cell)
@@ -130,7 +130,7 @@ button.addEventListener('click', () => {
   let value = document.getElementById('grid-size').value
 
   if (value > 50) {
-    alert('Max grid size is 50')
+    alert('Max grid size is 25')
     return;
   }
 
