@@ -5,7 +5,7 @@ const hasClass = (element, cls) => {
 }
 
 const addBombs = () => {
-  let noOfBombs = Math.floor(gridSize**2 * 0.23)
+  let noOfBombs = Math.floor(gridSize**2 * 0.2)
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
       col = Math.floor(Math.random() * gridSize) + 1,
@@ -48,7 +48,6 @@ const checkNeighbors = (row, col) => {
     }
   }
 
-  console.log(neighbors.length)
   return [noOfBombs, neighbors];
 }
 
@@ -65,8 +64,8 @@ const checkForBombs = (cell) => {
     [bombsNearby, neighbors] = checkNeighbors(...pos)
 
   cell.classList.add('visited')
-  cell.style.backgroundColor = 'white'  
   cell.classList.remove('flag')
+  cell.style.backgroundColor = 'white'   
 
   if (bombsNearby) {
     let text = document.createElement('p')
@@ -131,6 +130,9 @@ button.addEventListener('click', () => {
 
   if (value > 50) {
     alert('Max grid size is 25')
+    return;
+  } else if (value < 10) {
+    alert('Minimum grid size is 10')
     return;
   }
 

@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper</title>
     <style>
+      p {
+        margin: 0;
+        padding: 0;
+      }
+      input {
+        padding: 3px;
+      }
+      button {
+        padding: 3px;
+      }
       div#grid {
         height: 600px;
         width: 600px;
@@ -19,9 +29,13 @@
         box-sizing: border-box;
         min-height: 1.5vw;
       }
-      .settings { 
+      .container {
+        margin: 10px auto;
+        width: 70%;
+      }
+      .settings {
         margin: auto;
-        width: 100%;
+        text-align: center;
       }
       .bomb {
         /*background-color: red;*/
@@ -30,18 +44,16 @@
       .flag {
         border-radius: 50%;
         background-color: yellow;
-      }
-      p {
-        margin: 0;
-        padding: 0;
-      }
+      }      
     </style>
   </head>
   <body>
     <div id="grid"></div>
-    <div class="settings">
-      <input id="grid-size" type="number" max="50">
-      <button id="submit">Submit</button>
+    <div class="container">
+      <div class="settings">
+        <input id="grid-size" type="number" max="25" placeholder="Enter grid size (max 25)">
+        <button id="submit">Submit</button>
+      </div>      
     </div>    
     <script src="script.js"></script>
   </body>
