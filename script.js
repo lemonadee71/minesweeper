@@ -1,5 +1,5 @@
 let gridSize = 12,
-  bombPercentage = 0.2,
+  bombPercentage = 0.21,
   noOfBombs = Math.floor(gridSize**2 * bombPercentage),
   noOfCells = gridSize**2 - noOfBombs,
   duplicates = 0;
@@ -10,7 +10,7 @@ const hasClass = (element, cls) => {
 
 const addBombs = () => {
   let positionArray = []
-
+  console.log(noOfBombs)  
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
       col = Math.floor(Math.random() * gridSize) + 1
@@ -29,7 +29,6 @@ const addBombs = () => {
   }
 
   noOfCells += duplicates
-  console.log(noOfBombs, noOfCells, duplicates)
 }
 
 const revealBombs = () => {
@@ -115,12 +114,12 @@ const addFlag = (e) => {
   e.target.classList.toggle('flag')
 }
 
-const drawGrid = (size) => {
+const drawGrid = () => {
   let grid = document.getElementById('grid')  
-  grid.setAttribute('style', `grid-template-columns: repeat(${size}, 1fr);`) 
+  grid.setAttribute('style', `grid-template-columns: repeat(${gridSize}, 1fr);`) 
 
-  for (let i = 1; i <= size; i++) {
-    for (let j = 1; j <= size; j++) {
+  for (let i = 1; i <= gridSize; i++) {
+    for (let j = 1; j <= gridSize; j++) {
       let cell = document.createElement('div')
       cell.classList.add('cell')
       cell.setAttribute('data-pos', `${i}-${j}`)
@@ -139,9 +138,8 @@ const clearGrid = () => {
   while (grid.firstChild) {
     grid.removeChild(grid.lastChild)
   }
-  drawGrid(gridSize);
+  drawGrid();
 }
-
 
 
 /* Settings element event listeners */
@@ -182,6 +180,8 @@ button2.addEventListener('click', () => {
 let dropdown = document.getElementById('difficulty')
 dropdown.addEventListener('change', (e) => {
   [gridSize, bombPercentage] = e.target.value.split('-').map(x => parseFloat(x))
+  noOfBombs = Math.floor(gridSize**2 * bombPercentage)
+  console.log(gridSize, bombPercentage)
   clearGrid()
 })
 
