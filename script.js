@@ -5,15 +5,15 @@ const hasClass = (element, cls) => {
 }
 
 const addBombs = () => {
-  let noOfBombs = Math.floor(gridSize**2 * 0.2)
+  let noOfBombs = Math.floor(gridSize**2 * 0.23)
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
       col = Math.floor(Math.random() * gridSize) + 1,
       bombCell = document.querySelector(`.cell[data-pos="${row}-${col}"]`)
     
-    bombCell.classList.add('bomb')
-    bombCell.addEventListener('click', async () => {      
-      await revealBombs()
+    bombCell.classList.add('bomb')  
+    bombCell.addEventListener('click', () => {      
+      revealBombs()
       alert('You clicked on a bomb. Game over!')    
       setTimeout(clearGrid, 1000) 
     })
@@ -35,16 +35,18 @@ const checkNeighbors = (row, col) => {
   
   for (let i = row - 1, x = i + 3; i < x; i++) {
     for (let j = col - 1, y = j + 3; j < y; j++) {
+      if (i != row && j != col) continue;
       if ((i > 0 && i <= gridSize) && (j > 0  && j <= gridSize)) {
         let nearbyCell = document.querySelector(`.cell[data-pos="${i}-${j}"]`)
         neighbors.push(nearbyCell)        
-
+        console.log(nearbyCell, i, j)
         if (hasClass(nearbyCell, 'bomb')) {
           noOfBombs++
         }
       }
     }
   }
+
   console.log(neighbors.length)
   return [noOfBombs, neighbors];
 }
@@ -60,24 +62,24 @@ const checkForBombs = (cell) => {
   let pos = cell.getAttribute('data-pos').split('-').map(x => parseInt(x)),
     [bombsNearby, neighbors] = checkNeighbors(...pos)
 
-  if (bombsNearby > 0) {
+  cell.classList.add('visited')
+
+  if (bombsNearby) {
     let text = document.createElement('p')
     text.textContent = `${bombsNearby}`
     
     cell.appendChild(text);
-    cell.classList.add('visited')
-    cell.style.backgroundColor = 'white'
+    cell.style.backgroundColor = 'white'  
     cell.style.color = `rgb(${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)})`
     cell.removeEventListener('click', cellSelected)
   } else {
     revealNeighbors(neighbors)
-    /*
+    
     neighbors.forEach(cell => {
       if (!hasClass(cell, 'visited')) {
         checkForBombs(cell)
       }
-    })
-    */
+    })    
   }
   
 }
