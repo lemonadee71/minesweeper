@@ -10,7 +10,8 @@ const hasClass = (element, cls) => {
 
 const addBombs = () => {
   let positionArray = []
-  console.log(noOfBombs)  
+  noOfBombs = Math.floor(gridSize**2 * bombPercentage)
+
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
       col = Math.floor(Math.random() * gridSize) + 1
@@ -146,7 +147,7 @@ const clearGrid = () => {
 
 let button1 = document.getElementById('x')
 button1.addEventListener('click', () => {
-  let value = document.getElementById('grid-size').value
+  let value = parseInt(document.getElementById('grid-size').value)
 
   if (value > 50) {
     alert('Max grid size is 25')
@@ -156,7 +157,7 @@ button1.addEventListener('click', () => {
     return;
   }
 
-  gridSize = parseInt(value);
+  gridSize = value;
   clearGrid();
 })
 
@@ -180,8 +181,6 @@ button2.addEventListener('click', () => {
 let dropdown = document.getElementById('difficulty')
 dropdown.addEventListener('change', (e) => {
   [gridSize, bombPercentage] = e.target.value.split('-').map(x => parseFloat(x))
-  noOfBombs = Math.floor(gridSize**2 * bombPercentage)
-  console.log(gridSize, bombPercentage)
   clearGrid()
 })
 
