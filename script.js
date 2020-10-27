@@ -48,12 +48,13 @@ const checkNeighbors = (row, col) => {
   
   for (let i = row - 1, x = i + 3; i < x; i++) {
     for (let j = col - 1, y = j + 3; j < y; j++) {
-      if (i != row && j != col) continue;
+      if (i === row && j === col) continue;
       if ((i > 0 && i <= gridSize) && (j > 0  && j <= gridSize)) {
         let nearbyCell = document.querySelector(`.cell[data-pos="${i}-${j}"]`)
-        neighbors.push(nearbyCell)        
         if (hasClass(nearbyCell, 'bomb')) {
           nearbyBombs++
+        } else {
+          neighbors.push(nearbyCell)
         }
       }
     }
@@ -74,6 +75,8 @@ const checkForBombs = (cell) => {
   let pos = cell.getAttribute('data-pos').split('-').map(x => parseInt(x)),
     [bombsNearby, neighbors] = checkNeighbors(...pos)
 
+  if (hasClass(cell, 'visited')) return;
+
   cell.classList.add('visited')
   cell.classList.remove('flag')
   cell.style.backgroundColor = 'white'
@@ -90,9 +93,7 @@ const checkForBombs = (cell) => {
   } else {
     revealNeighbors(neighbors)
     neighbors.forEach(cell => {
-      if (!hasClass(cell, 'visited')) {
-        checkForBombs(cell)
-      }
+      checkForBombs(cell)
     })    
   }
 
