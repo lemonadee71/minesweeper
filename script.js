@@ -1,8 +1,8 @@
 let gridSize = 12,
   bombPercentage = 0.21,
-  noOfBombs = Math.floor(gridSize**2 * bombPercentage),
-  noOfCells = gridSize**2 - noOfBombs,
-  duplicates = 0;
+  noOfBombs,
+  noOfCells,
+  duplicates
 
 const hasClass = (element, cls) => {
   return element.className.includes(cls);
@@ -11,6 +11,8 @@ const hasClass = (element, cls) => {
 const addBombs = () => {
   let positionArray = []
   noOfBombs = Math.floor(gridSize**2 * bombPercentage)
+  noOfCells = gridSize**2 - noOfBombs
+  duplicates = 0; 
 
   for (let i = 0; i < noOfBombs; i++) {
     let row = Math.floor(Math.random() * gridSize) + 1,
