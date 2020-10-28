@@ -23,7 +23,8 @@ const addBombs = () => {
 
     let bombCell = document.querySelector(`.cell[data-pos="${row}-${col}"]`)
     
-    bombCell.classList.add('bomb')  
+    bombCell.classList.add('bomb')
+    bombCell.removeEventListener('click', cellSelected)  
     bombCell.addEventListener('click', () => {      
       revealBombs()
       alert('You clicked on a bomb. Game over!')    
@@ -38,9 +39,7 @@ const revealBombs = () => {
   let bombs = Array.from(document.querySelectorAll('.bomb'))
   bombs.forEach(bomb => {
     bomb.classList.remove('flag')
-    setTimeout(() => {
-      bomb.style.backgroundColor = 'red'
-    }, 500)    
+    bomb.style.backgroundColor = 'red'    
   })
 }
 
@@ -65,14 +64,6 @@ const checkNeighbors = (row, col) => {
   return [nearbyBombs, neighbors];
 }
 
-const revealNeighbors = (neighbors) => {
-  neighbors.forEach(cell => {
-    if (!hasClass(cell, 'visited'))
-      cell.style.backgroundColor = 'white'
-      cell.removeEventListener('contextmenu', addFlag)
-  })
-}
-
 const checkForBombs = (cell) => {
   let pos = cell.getAttribute('data-pos').split('-').map(x => parseInt(x)),
     [bombsNearby, neighbors] = checkNeighbors(...pos)
@@ -81,6 +72,8 @@ const checkForBombs = (cell) => {
 
   cell.classList.add('visited')
   cell.classList.remove('flag')
+  cell.removeEventListener('click', cellSelected)
+  cell.removeEventListener('contextmenu', addFlag)
   cell.style.backgroundColor = 'white'
   noOfCells-- 
 
@@ -89,19 +82,21 @@ const checkForBombs = (cell) => {
       let text = document.createElement('p')
       text.textContent = `${bombsNearby}`
       cell.appendChild(text);    
-      cell.style.color = `rgb(${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)}, ${Math.floor(Math.random() * 220)})`
+      cell.style.color = `rgb(${Math.floor(Math.random() * 220)},
+                              ${Math.floor(Math.random() * 220)}, 
+                              ${Math.floor(Math.random() * 220)})`
     }    
-    cell.removeEventListener('click', cellSelected)
+    
   } else {
-    revealNeighbors(neighbors)
     neighbors.forEach(cell => {
       checkForBombs(cell)
     })    
   }
 
   if (noOfCells === 0) {
+    revealBombs()
     alert('Congratulations! You won.')
-    clearGrid()
+    setTimeout(clearGrid(), 1500)
     return;
   }  
 }
@@ -152,7 +147,7 @@ let button1 = document.getElementById('x')
 button1.addEventListener('click', () => {
   let value = parseInt(document.getElementById('grid-size').value)
 
-  if (value > 50) {
+  if (value > 25) {
     alert('Max grid size is 25')
     return;
   } else if (value < 8) {
